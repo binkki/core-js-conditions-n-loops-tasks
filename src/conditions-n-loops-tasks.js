@@ -326,8 +326,62 @@ function getBalanceIndex(arr) {
  *          [10, 9,  8,  7]
  *        ]
  */
-function getSpiralMatrix(/* size */) {
-  throw new Error('Not implemented');
+function getSpiralMatrix(size) {
+  const result = new Array(size);
+  for (let i = 0; i < size; i += 1) {
+    result[i] = new Array(size);
+  }
+  const current = [0, -1];
+  let direction = 1;
+  let i = 1;
+  while (i <= size * size) {
+    if (direction === 1) {
+      if (
+        current[1] + 1 < size &&
+        result[current[0]][current[1] + 1] === undefined
+      ) {
+        current[1] += 1;
+        result[current[0]][current[1]] = i;
+        i += 1;
+      } else {
+        direction = 2;
+      }
+    } else if (direction === 2) {
+      if (
+        current[0] + 1 < size &&
+        result[current[0] + 1][current[1]] === undefined
+      ) {
+        current[0] += 1;
+        result[current[0]][current[1]] = i;
+        i += 1;
+      } else {
+        direction = 3;
+      }
+    } else if (direction === 3) {
+      if (
+        current[1] - 1 >= 0 &&
+        result[current[0]][current[1] - 1] === undefined
+      ) {
+        current[1] -= 1;
+        result[current[0]][current[1]] = i;
+        i += 1;
+      } else {
+        direction = 4;
+      }
+    } else if (direction === 4) {
+      if (
+        current[0] - 1 >= 0 &&
+        result[current[0] - 1][current[1]] === undefined
+      ) {
+        current[0] -= 1;
+        result[current[0]][current[1]] = i;
+        i += 1;
+      } else {
+        direction = 1;
+      }
+    }
+  }
+  return result;
 }
 
 /**
@@ -378,8 +432,18 @@ function rotateMatrix(matrix) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function sortByAsc(arr) {
+  const result = arr;
+  for (let i = 0; i < result.length; i += 1) {
+    for (let j = i + 1; j < result.length; j += 1) {
+      if (result[i] > result[j]) {
+        const temp = result[i];
+        result[i] = result[j];
+        result[j] = temp;
+      }
+    }
+  }
+  return result;
 }
 
 /**
@@ -399,8 +463,41 @@ function sortByAsc(/* arr */) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  let step = 0;
+  let temp = 1;
+  let l = str.length;
+  if (l % 2 === 0) {
+    l -= 1;
+  }
+  while (temp !== 0) {
+    step += 1;
+    temp *= 2;
+    if (temp > Math.floor((l + 1) / 2)) {
+      temp -= l;
+    } else if (temp < -Math.floor((l + 1) / 2)) {
+      temp += l;
+    }
+    if (temp === -1) {
+      step = 2 * step + 1;
+      break;
+    } else if (temp === 1) {
+      break;
+    }
+  }
+
+  let result = str;
+  for (let i = 0; i < iterations % step; i += 1) {
+    temp = '';
+    for (let j = 0; j < str.length; j += 2) {
+      temp += result[j];
+    }
+    for (let j = 1; j < str.length; j += 2) {
+      temp += result[j];
+    }
+    result = temp;
+  }
+  return temp;
 }
 
 /**
@@ -420,8 +517,42 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const temp = new Array(10).fill(0);
+  let n = number;
+  let lastNumber = -1;
+  let result = number;
+  while (n > 0) {
+    const x = n % 10;
+    n = Math.floor(n / 10);
+    if (lastNumber === -1) {
+      temp[x] += 1;
+    } else {
+      temp[x] += 1;
+      if (x < lastNumber) {
+        let nextDigit = -1;
+        for (let j = x + 1; j < 10; j += 1) {
+          if (temp[j] !== 0) {
+            nextDigit = j;
+            break;
+          }
+        }
+        if (nextDigit !== -1) {
+          temp[nextDigit] -= 1;
+          result = n * 10 + nextDigit;
+          for (let j = 0; j < 10; j += 1) {
+            while (temp[j] !== 0) {
+              result = result * 10 + j;
+              temp[j] -= 1;
+            }
+          }
+          return result;
+        }
+      }
+    }
+    lastNumber = x;
+  }
+  return result;
 }
 
 module.exports = {
